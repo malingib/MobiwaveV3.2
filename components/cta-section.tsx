@@ -19,15 +19,15 @@ export default function CtaSection() {
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({})
 
   const resetForm = () => {
-    setName("");
-    setEmail("");
-    setPhone("");
-    setService("");
-    setProduct("");
-    setSubmitted(false);
-    setValidationErrors({});
-    setError(null);
-  };
+    setName("")
+    setEmail("")
+    setPhone("")
+    setService("")
+    setProduct("")
+    setSubmitted(false)
+    setValidationErrors({})
+    setError(null)
+  }
 
   const validateForm = () => {
     try {
@@ -37,42 +37,42 @@ export default function CtaSection() {
         email,
         phone,
         service,
-        product
-      });
-      setValidationErrors({});
-      return true;
+        product,
+      })
+      setValidationErrors({})
+      return true
     } catch (error) {
       // Handle Zod validation errors
       if (error instanceof ZodError) {
-        const errorMap: Record<string, string> = {};
-        
+        const errorMap: Record<string, string> = {}
+
         error.issues.forEach((issue) => {
           if (issue.path && issue.path.length > 0) {
-            errorMap[issue.path[0]] = issue.message;
+            errorMap[issue.path[0]] = issue.message
           }
-        });
-        
-        setValidationErrors(errorMap);
+        })
+
+        setValidationErrors(errorMap)
       } else {
         // If we can't parse the error, just set a generic error
-        console.error("Validation error:", error);
-        setError("Invalid form data. Please check your entries.");
+        console.error("Validation error:", error)
+        setError("Invalid form data. Please check your entries.")
       }
-      return false;
+      return false
     }
-  };
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsSubmitting(true)
     setError(null)
-    
+
     // Validate form first
     if (!validateForm()) {
-      setIsSubmitting(false);
-      return;
+      setIsSubmitting(false)
+      return
     }
-    
+
     try {
       // Prepare form data for backend API by adapting it to the contact form schema
       const ctaFormData = {
@@ -80,12 +80,12 @@ export default function CtaSection() {
         email,
         phone,
         service,
-        product
-      };
-      
-      const formData = adaptCtaFormToContactForm(ctaFormData);
-      console.log("Sending form data:", formData);
-      
+        product,
+      }
+
+      const formData = adaptCtaFormToContactForm(ctaFormData)
+      console.log("Sending form data:", formData)
+
       // Send the data to the backend
       const response = await fetch("/api/send-mail", {
         method: "POST",
@@ -94,55 +94,74 @@ export default function CtaSection() {
         },
         body: JSON.stringify(formData),
       })
-      
+
       // Check if response is ok before trying to parse JSON
       if (!response.ok) {
-        console.error("HTTP Error:", response.status, response.statusText);
-        
-        // Try to get error message from response
-        let errorMessage = "Failed to send your message. Please try again later.";
+        console.error("HTTP Error:", response.status, response.statusText)
+
+        // Read response body only once as text
+        let errorMessage = "Failed to send your message. Please try again later."
         try {
-          const errorData = await response.json();
-          errorMessage = errorData.message || errorMessage;
-        } catch (jsonError) {
-          console.error("Could not parse error response as JSON:", jsonError);
-          // If we can't parse JSON, try to get text
+          const responseText = await response.text()
+          console.error("Error response text:", responseText)
+
+          // Try to parse the text as JSON
           try {
-            const errorText = await response.text();
-            console.error("Error response text:", errorText);
-            if (errorText.includes("404")) {
-              errorMessage = "Email service not found. Please contact support.";
-            } else if (errorText.includes("500")) {
-              errorMessage = "Server error. Please try again later.";
+            const errorData = JSON.parse(responseText)
+            errorMessage = errorData.message || errorMessage
+          } catch (jsonParseError) {
+            // If it's not JSON, use the text directly or provide specific messages
+            console.error("Response is not JSON:", jsonParseError)
+            if (responseText.includes("Internal Server Error")) {
+              errorMessage = "Server error. Please try again later."
+            } else if (responseText.includes("404")) {
+              errorMessage = "Email service not found. Please contact support."
+            } else if (responseText.trim()) {
+              // Use the first 100 characters of the error text
+              errorMessage = responseText.trim().substring(0, 100)
             }
-          } catch (textError) {
-            console.error("Could not get error response text:", textError);
+          }
+        } catch (textError) {
+          console.error("Could not read error response:", textError)
+          // Provide status-specific error messages
+          if (response.status === 500) {
+            errorMessage = "Server error. Please try again later."
+          } else if (response.status === 404) {
+            errorMessage = "Email service not found. Please contact support."
+          } else if (response.status === 400) {
+            errorMessage = "Invalid form data. Please check your entries."
           }
         }
-        
-        setError(errorMessage);
-        return;
+
+        setError(errorMessage)
+        return
       }
-      
-      const responseData = await response.json();
-      console.log("Email sent successfully:", responseData);
-      setSubmitted(true);
-      
+
+      // Parse successful response
+      try {
+        const responseData = await response.json()
+        console.log("Email sent successfully:", responseData)
+        setSubmitted(true)
+      } catch (jsonError) {
+        console.error("Could not parse success response:", jsonError)
+        // Even if we can't parse the response, if status was ok, consider it successful
+        setSubmitted(true)
+      }
     } catch (error) {
-      console.error("Error sending form:", error);
-      
+      console.error("Error sending form:", error)
+
       // Provide more specific error messages based on the error type
-      let errorMessage = "An unexpected error occurred. Please try again later.";
-      
+      let errorMessage = "An unexpected error occurred. Please try again later."
+
       if (error instanceof TypeError && error.message.includes("fetch")) {
-        errorMessage = "Network error. Please check your connection and try again.";
+        errorMessage = "Network error. Please check your connection and try again."
       } else if (error instanceof SyntaxError) {
-        errorMessage = "Server response error. Please try again later.";
+        errorMessage = "Server response error. Please try again later."
       }
-      
-      setError(errorMessage);
+
+      setError(errorMessage)
     } finally {
-      setIsSubmitting(false);
+      setIsSubmitting(false)
     }
   }
 
@@ -171,7 +190,7 @@ export default function CtaSection() {
           </div>
         </div>
       </section>
-    );
+    )
   }
 
   return (
@@ -288,7 +307,7 @@ export default function CtaSection() {
                 }}
               >
                 <h3 className="text-2xl font-bold mb-6 text-center">Get in Touch</h3>
-                
+
                 {error && (
                   <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
                     <strong className="font-bold">Error:</strong>
@@ -305,16 +324,14 @@ export default function CtaSection() {
                       type="text"
                       id="name"
                       className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                        validationErrors.name ? 'border-red-500' : 'border-gray-300'
+                        validationErrors.name ? "border-red-500" : "border-gray-300"
                       }`}
                       placeholder="Your name"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                       required
                     />
-                    {validationErrors.name && (
-                      <p className="text-red-500 text-xs mt-1">{validationErrors.name}</p>
-                    )}
+                    {validationErrors.name && <p className="text-red-500 text-xs mt-1">{validationErrors.name}</p>}
                   </div>
 
                   <div className="mb-4">
@@ -325,16 +342,14 @@ export default function CtaSection() {
                       type="email"
                       id="email"
                       className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                        validationErrors.email ? 'border-red-500' : 'border-gray-300'
+                        validationErrors.email ? "border-red-500" : "border-gray-300"
                       }`}
                       placeholder="Your email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       required
                     />
-                    {validationErrors.email && (
-                      <p className="text-red-500 text-xs mt-1">{validationErrors.email}</p>
-                    )}
+                    {validationErrors.email && <p className="text-red-500 text-xs mt-1">{validationErrors.email}</p>}
                   </div>
 
                   <div className="mb-4">
@@ -345,15 +360,13 @@ export default function CtaSection() {
                       type="tel"
                       id="phone"
                       className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                        validationErrors.phone ? 'border-red-500' : 'border-gray-300'
+                        validationErrors.phone ? "border-red-500" : "border-gray-300"
                       }`}
                       placeholder="Your phone number"
                       value={phone}
                       onChange={(e) => setPhone(e.target.value)}
                     />
-                    {validationErrors.phone && (
-                      <p className="text-red-500 text-xs mt-1">{validationErrors.phone}</p>
-                    )}
+                    {validationErrors.phone && <p className="text-red-500 text-xs mt-1">{validationErrors.phone}</p>}
                   </div>
 
                   <div className="mb-6">
@@ -363,7 +376,7 @@ export default function CtaSection() {
                     <select
                       id="service"
                       className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                        validationErrors.service ? 'border-red-500' : 'border-gray-300'
+                        validationErrors.service ? "border-red-500" : "border-gray-300"
                       }`}
                       value={service}
                       onChange={(e) => setService(e.target.value)}
@@ -386,7 +399,7 @@ export default function CtaSection() {
                     <select
                       id="product"
                       className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                        validationErrors.product ? 'border-red-500' : 'border-gray-300'
+                        validationErrors.product ? "border-red-500" : "border-gray-300"
                       }`}
                       value={product}
                       onChange={(e) => setProduct(e.target.value)}
@@ -406,7 +419,7 @@ export default function CtaSection() {
                     {validationErrors.product && (
                       <p className="text-red-500 text-xs mt-1">{validationErrors.product}</p>
                     )}
-                  </div>                
+                  </div>
                   <button
                     type="submit"
                     className="w-full bg-gradient-to-r from-teal-500 to-blue-500 hover:from-teal-600 hover:to-blue-600 text-white font-medium py-3 px-4 rounded-lg shadow-md hover:shadow-lg transition-all transform hover:translate-y-[-2px]"
@@ -414,13 +427,31 @@ export default function CtaSection() {
                   >
                     {isSubmitting ? (
                       <span className="flex items-center justify-center">
-                        <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        <svg
+                          className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                        >
+                          <circle
+                            className="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                          ></circle>
+                          <path
+                            className="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                          ></path>
                         </svg>
                         Sending...
                       </span>
-                    ) : "Send Message"}
+                    ) : (
+                      "Send Message"
+                    )}
                   </button>
                 </form>
               </motion.div>
