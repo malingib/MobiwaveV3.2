@@ -152,4 +152,4 @@ export async function sendEmail(transporter: Transporter, options: SendMailOptio
 // Strip HTML tags for plain text version
 export function stripHtml(html: string): string {
   return html.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();
-} 
+}

@@ -129,4 +129,4 @@ function copyHtmlFiles(sourceDir, targetDir, currentPath = '') {
       }
     }
   });
-} 
+}

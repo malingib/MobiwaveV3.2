@@ -9,4 +9,4 @@ const ContactForm = dynamic(() => import("@/components/contact/contact-form"), {
 
 export default function ContactFormWrapper() {
   return <ContactForm />
-} 
+}

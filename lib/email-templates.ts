@@ -55,4 +55,4 @@ export function generateContactEmailTemplate(data: ContactFormData) {
     subject,
     html
   };
-} 
+}

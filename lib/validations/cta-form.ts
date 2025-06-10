@@ -41,4 +41,4 @@ export function adaptCtaFormToContactForm(ctaForm: CtaFormData) {
     inquiry: "sales", // Default to sales as this is from the CTA section
     message: `Service: ${ctaForm.service}\nProduct: ${ctaForm.product}\n\nThis inquiry was sent from the CTA section.`
   };
-} 
+}

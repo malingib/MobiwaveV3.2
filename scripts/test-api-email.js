@@ -100,4 +100,4 @@ async function runTests() {
 runTests().catch(error => {
   console.error('Test runner error:', error);
   process.exit(1);
-}); 
+});
