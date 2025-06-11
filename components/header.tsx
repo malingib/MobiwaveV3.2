@@ -55,8 +55,8 @@ export default function Header() {
               height={48}
               priority
               style={{
-                width: '192px',
-                height: '48px'
+                width: "192px",
+                height: "48px",
               }}
             />
           </Link>
@@ -96,6 +96,12 @@ export default function Header() {
                     Bulk Email
                   </Link>
                   <Link
+                    href="/services/bulk-whatsapp"
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600"
+                  >
+                    Bulk WhatsApp
+                  </Link>
+                  <Link
                     href="/services/ussd-codes"
                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600"
                   >
@@ -123,7 +129,7 @@ export default function Header() {
                     href="/services/airtime-rewards"
                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600"
                   >
-                    Airtime and Data Reward System
+                    Airtime Rewards
                   </Link>
                   <Link
                     href="/services/service-desk"
@@ -131,13 +137,6 @@ export default function Header() {
                   >
                     Service Desk
                   </Link>
-                  <Link
-                    href="/services/bulk-whatsapp"
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600"
-                  >
-                    Bulk WhatsApp
-                  </Link>
-
                 </div>
               </div>
             </div>
@@ -190,15 +189,15 @@ export default function Header() {
               rel="noopener noreferrer"
               className="inline-flex items-center justify-center px-6 py-2 border border-transparent text-base font-medium rounded-md text-white bg-gradient-to-r from-teal-500 to-blue-500 hover:from-teal-600 hover:to-blue-600 shadow-sm transition-all duration-300 hover:shadow-lg"
             >
-            SMS Platform
+              SMS Platform
             </a>
             <a
-              href="#"
+              href="https://rewards.mobiwave.co.ke"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center justify-center px-6 py-2 border border-transparent text-base font-medium rounded-md text-white bg-gradient-to-r from-teal-500 to-blue-500 hover:from-teal-600 hover:to-blue-600 shadow-sm transition-all duration-300 hover:shadow-lg"
             >
-            Rewards Platform
+              Rewards Platform
             </a>
           </div>
 
@@ -254,11 +253,25 @@ export default function Header() {
                   Bulk Email
                 </Link>
                 <Link
-                  href="/services/ussd-shortcodes"
+                  href="/services/bulk-whatsapp"
                   className="block px-3 py-2 rounded-md text-sm font-medium text-gray-600 hover:text-blue-600 hover:bg-blue-50"
                   onClick={() => setMobileMenuOpen(false)}
                 >
-                  USSD & Shortcodes
+                  Bulk WhatsApp
+                </Link>
+                <Link
+                  href="/services/ussd-codes"
+                  className="block px-3 py-2 rounded-md text-sm font-medium text-gray-600 hover:text-blue-600 hover:bg-blue-50"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  USSD Codes
+                </Link>
+                <Link
+                  href="/services/shortcodes"
+                  className="block px-3 py-2 rounded-md text-sm font-medium text-gray-600 hover:text-blue-600 hover:bg-blue-50"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Shortcodes
                 </Link>
                 <Link
                   href="/services/mpesa-integration"
@@ -273,6 +286,20 @@ export default function Header() {
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   SMS Surveys
+                </Link>
+                <Link
+                  href="/services/airtime-rewards"
+                  className="block px-3 py-2 rounded-md text-sm font-medium text-gray-600 hover:text-blue-600 hover:bg-blue-50"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Airtime Rewards
+                </Link>
+                <Link
+                  href="/services/service-desk"
+                  className="block px-3 py-2 rounded-md text-sm font-medium text-gray-600 hover:text-blue-600 hover:bg-blue-50"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Service Desk
                 </Link>
               </div>
             )}
@@ -308,23 +335,33 @@ export default function Header() {
                 </Link>
               </div>
             )}
-            <a
-              href="https://sms.mobiwave.co.ke/login"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="block w-full text-center px-4 py-2 mt-4 text-white bg-gradient-to-r from-teal-500 to-blue-500 rounded-md hover:from-teal-600 hover:to-blue-600 shadow-sm transition-all duration-300 hover:shadow-lg"
+            <Link
+              href="/contact"
+              className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50"
               onClick={() => setMobileMenuOpen(false)}
             >
               Contact Us
-            </a>
-            <Link
-              href="/login"
-              className="block px-3 py-2 mt-4 rounded-md text-base font-medium text-white bg-gradient-to-r from-teal-500 to-blue-500 hover:from-teal-600 hover:to-blue-600"
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              Client Login
             </Link>
-            
+            <div className="pt-4">
+              <a
+                href="https://sms.mobiwave.co.ke/login"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block w-full text-center px-4 py-2 mb-2 text-white bg-gradient-to-r from-teal-500 to-blue-500 rounded-md hover:from-teal-600 hover:to-blue-600 shadow-sm transition-all duration-300 hover:shadow-lg"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                SMS Platform
+              </a>
+              <a
+                href="https://rewards.mobiwave.co.ke"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block w-full text-center px-4 py-2 text-white bg-gradient-to-r from-teal-500 to-blue-500 rounded-md hover:from-teal-600 hover:to-blue-600 shadow-sm transition-all duration-300 hover:shadow-lg"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Rewards Platform
+              </a>
+            </div>
           </div>
         </div>
       )}

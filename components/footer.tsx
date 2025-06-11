@@ -15,8 +15,8 @@ export default function Footer() {
                 height={40}
                 className="brightness-0 invert"
                 style={{
-                  width: '160px',
-                  height: '40px'
+                  width: "160px",
+                  height: "40px",
                 }}
               />
             </div>
@@ -70,7 +70,7 @@ export default function Footer() {
                   Shortcodes
                 </Link>
               </li>
-              
+
               <li>
                 <Link href="/services/mpesa-integration" className="text-gray-400 hover:text-white">
                   M-Pesa Integration
@@ -87,7 +87,7 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/services/airtime-reward" className="text-gray-400 hover:text-white">
+                <Link href="/services/airtime-rewards" className="text-gray-400 hover:text-white">
                   Airtime and Data Reward System
                 </Link>
               </li>

@@ -10,14 +10,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { CheckCircle2, AlertCircle } from "lucide-react"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { contactFormSchema, type ContactFormData } from "@/lib/validations/contact"
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form"
+import { submitContactForm } from "@/lib/form-handler"
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 
 export default function ContactForm() {
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -42,28 +36,20 @@ export default function ContactForm() {
     try {
       setIsSubmitting(true)
       setError(null)
-      
-      // Send the form data directly
-      const response = await fetch("/api/send-mail", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      })
-  
-      const responseData = await response.json()
-      
-      if (response.ok) {
-        console.log("Email sent successfully:", responseData)
+
+      console.log("📝 Submitting contact form:", data)
+      const result = await submitContactForm(data)
+
+      if (result.success) {
+        console.log("✅ Contact form submitted successfully")
         setIsSubmitted(true)
         form.reset()
       } else {
-        console.error("Failed to send email:", responseData)
-        setError(responseData.message || "Failed to send your message. Please try again later.")
+        console.error("❌ Contact form submission failed:", result.message)
+        setError(result.message)
       }
     } catch (error) {
-      console.error("Error:", error)
+      console.error("❌ Contact form error:", error)
       setError("An unexpected error occurred. Please try again later.")
     } finally {
       setIsSubmitting(false)
@@ -243,14 +229,7 @@ export default function ContactForm() {
                           fill="none"
                           viewBox="0 0 24 24"
                         >
-                          <circle
-                            className="opacity-25"
-                            cx="12"
-                            cy="12"
-                            r="10"
-                            stroke="currentColor"
-                            strokeWidth="4"
-                          />
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                           <path
                             className="opacity-75"
                             fill="currentColor"

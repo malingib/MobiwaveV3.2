@@ -3,7 +3,8 @@
 import type React from "react"
 import { useState } from "react"
 import { motion } from "framer-motion"
-import { ctaFormSchema, adaptCtaFormToContactForm } from "@/lib/validations/cta-form"
+import { ctaFormSchema } from "@/lib/validations/cta-form"
+import { submitContactForm } from "@/lib/form-handler"
 import { ZodError } from "zod"
 import { CheckCircle } from "lucide-react"
 
@@ -31,7 +32,6 @@ export default function CtaSection() {
 
   const validateForm = () => {
     try {
-      // Validate the form data using our schema
       ctaFormSchema.parse({
         name,
         email,
@@ -42,19 +42,15 @@ export default function CtaSection() {
       setValidationErrors({})
       return true
     } catch (error) {
-      // Handle Zod validation errors
       if (error instanceof ZodError) {
         const errorMap: Record<string, string> = {}
-
         error.issues.forEach((issue) => {
           if (issue.path && issue.path.length > 0) {
             errorMap[issue.path[0]] = issue.message
           }
         })
-
         setValidationErrors(errorMap)
       } else {
-        // If we can't parse the error, just set a generic error
         console.error("Validation error:", error)
         setError("Invalid form data. Please check your entries.")
       }
@@ -67,14 +63,12 @@ export default function CtaSection() {
     setIsSubmitting(true)
     setError(null)
 
-    // Validate form first
     if (!validateForm()) {
       setIsSubmitting(false)
       return
     }
 
     try {
-      // Prepare form data for backend API by adapting it to the contact form schema
       const ctaFormData = {
         name,
         email,
@@ -83,83 +77,17 @@ export default function CtaSection() {
         product,
       }
 
-      const formData = adaptCtaFormToContactForm(ctaFormData)
-      console.log("Sending form data:", formData)
+      // Send directly without adaptation to avoid potential null issues
+      const result = await submitContactForm(ctaFormData)
 
-      // Send the data to the backend
-      const response = await fetch("/api/send-mail", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      })
-
-      // Check if response is ok before trying to parse JSON
-      if (!response.ok) {
-        console.error("HTTP Error:", response.status, response.statusText)
-
-        // Read response body only once as text
-        let errorMessage = "Failed to send your message. Please try again later."
-        try {
-          const responseText = await response.text()
-          console.error("Error response text:", responseText)
-
-          // Try to parse the text as JSON
-          try {
-            const errorData = JSON.parse(responseText)
-            errorMessage = errorData.message || errorMessage
-          } catch (jsonParseError) {
-            // If it's not JSON, use the text directly or provide specific messages
-            console.error("Response is not JSON:", jsonParseError)
-            if (responseText.includes("Internal Server Error")) {
-              errorMessage = "Server error. Please try again later."
-            } else if (responseText.includes("404")) {
-              errorMessage = "Email service not found. Please contact support."
-            } else if (responseText.trim()) {
-              // Use the first 100 characters of the error text
-              errorMessage = responseText.trim().substring(0, 100)
-            }
-          }
-        } catch (textError) {
-          console.error("Could not read error response:", textError)
-          // Provide status-specific error messages
-          if (response.status === 500) {
-            errorMessage = "Server error. Please try again later."
-          } else if (response.status === 404) {
-            errorMessage = "Email service not found. Please contact support."
-          } else if (response.status === 400) {
-            errorMessage = "Invalid form data. Please check your entries."
-          }
-        }
-
-        setError(errorMessage)
-        return
-      }
-
-      // Parse successful response
-      try {
-        const responseData = await response.json()
-        console.log("Email sent successfully:", responseData)
+      if (result.success) {
         setSubmitted(true)
-      } catch (jsonError) {
-        console.error("Could not parse success response:", jsonError)
-        // Even if we can't parse the response, if status was ok, consider it successful
-        setSubmitted(true)
+      } else {
+        setError(result.message)
       }
     } catch (error) {
-      console.error("Error sending form:", error)
-
-      // Provide more specific error messages based on the error type
-      let errorMessage = "An unexpected error occurred. Please try again later."
-
-      if (error instanceof TypeError && error.message.includes("fetch")) {
-        errorMessage = "Network error. Please check your connection and try again."
-      } else if (error instanceof SyntaxError) {
-        errorMessage = "Server response error. Please try again later."
-      }
-
-      setError(errorMessage)
+      console.error("Form submission error:", error)
+      setError("An unexpected error occurred. Please try again later.")
     } finally {
       setIsSubmitting(false)
     }

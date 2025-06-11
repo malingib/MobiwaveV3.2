@@ -2,50 +2,71 @@
 
 import { motion } from "framer-motion"
 import Link from "next/link"
+import { ArrowRight, Phone, Mail } from "lucide-react"
 
 export default function ServicesCTA() {
   return (
-    <section className="py-20 bg-white">
+    <section className="py-20 bg-gradient-to-r from-blue-600 to-blue-800 text-white">
       <div className="container mx-auto px-6">
-        <div className="bg-gradient-to-br from-blue-900 via-blue-800 to-blue-700 rounded-2xl p-8 md:p-12 shadow-xl relative overflow-hidden">
-          <div className="absolute inset-0 overflow-hidden">
-            <div className="absolute -top-40 -left-40 w-80 h-80 bg-white rounded-full blur-3xl opacity-10"></div>
-            <div className="absolute bottom-0 right-0 w-60 h-60 bg-white rounded-full blur-3xl opacity-10"></div>
+        <motion.div
+          className="text-center max-w-4xl mx-auto"
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          viewport={{ once: true }}
+        >
+          <h2 className="text-3xl md:text-4xl font-bold mb-6">Ready to Transform Your Communication?</h2>
+          <p className="text-xl mb-8 text-blue-100">
+            Get started with MobiWave today and experience the power of seamless communication solutions.
+          </p>
+
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
+            <Link
+              href="/contact"
+              className="inline-flex items-center px-8 py-4 bg-white text-blue-600 rounded-lg font-semibold hover:bg-blue-50 transition-all duration-300 shadow-lg hover:shadow-xl"
+            >
+              Get Started Today
+              <ArrowRight className="ml-2 h-5 w-5" />
+            </Link>
+
+            <Link
+              href="/pricing"
+              className="inline-flex items-center px-8 py-4 border-2 border-white text-white rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition-all duration-300"
+            >
+              View Pricing
+            </Link>
           </div>
 
-          <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-2xl mx-auto">
             <motion.div
-              className="md:w-2/3"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
+              className="flex items-center justify-center space-x-3"
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6 }}
               viewport={{ once: true }}
             >
-              <h2 className="text-3xl md:text-4xl font-bold mb-4 text-white">Need a Custom Solution?</h2>
-              <p className="text-blue-100 text-lg">
-                Our team of experts can help you design a tailored communication strategy that meets your specific
-                business needs. Contact us today to discuss your requirements.
-              </p>
+              <Phone className="h-6 w-6 text-blue-200" />
+              <div>
+                <div className="font-semibold">Call Us</div>
+                <div className="text-blue-200">+254 700 000 000</div>
+              </div>
             </motion.div>
 
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
+              className="flex items-center justify-center space-x-3"
+              initial={{ opacity: 0, x: 20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6 }}
               viewport={{ once: true }}
             >
-              <Link
-                href="/contact"
-                className="inline-flex items-center px-6 py-4 rounded-lg bg-white text-blue-700 font-semibold hover:bg-blue-50 transition-all duration-300 shadow-md hover:shadow-lg transform hover:translate-y-[-2px]"
-              >
-                Contact Our Team
-                <svg className="ml-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                </svg>
-              </Link>
+              <Mail className="h-6 w-6 text-blue-200" />
+              <div>
+                <div className="font-semibold">Email Us</div>
+                <div className="text-blue-200">info@mobiwave.co.ke</div>
+              </div>
             </motion.div>
           </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   )

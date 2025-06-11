@@ -1,12 +1,12 @@
 import ServicesHero from "@/components/services/services-hero"
-import ServicesList from "@/components/services/services-list"
 import ServicesCTA from "@/components/services/services-cta"
+import ServicesGrid from "@/components/services/services-grid"
 
 export default function ServicesPage() {
   return (
     <>
       <ServicesHero />
-      <ServicesList />
+      <ServicesGrid />
       <ServicesCTA />
     </>
   )
