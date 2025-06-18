@@ -4,19 +4,19 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
     "build": "next build",
-    "start": "next start",
-    "start:server": "node server.js",
-    "start:app": "node app.js",
-    "start:simple": "node simple-start.js",
-    "start:custom": "node start.js",
-    "lint": "next lint",
     "build:static": "next build && next export",
-    "prepare-upload": "node prepare-for-upload.js",
     "create-deployment": "node create-deployment-package.js",
     "deploy": "npm run build && npm run prepare-upload && npm run create-deployment",
-    "deploy:nodejs": "npm run build && node create-nodejs-deployment.js"
+    "deploy:nodejs": "npm run build && node create-nodejs-deployment.js",
+    "dev": "next dev",
+    "lint": "next lint",
+    "prepare-upload": "node prepare-for-upload.js",
+    "start": "next start",
+    "start:app": "node app.js",
+    "start:custom": "node start.js",
+    "start:server": "node server.js",
+    "start:simple": "node simple-start.js"
   },
   "dependencies": {
     "@emotion/is-prop-valid": "latest",

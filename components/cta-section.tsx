@@ -3,9 +3,7 @@
 import type React from "react"
 import { useState } from "react"
 import { motion } from "framer-motion"
-import { ctaFormSchema } from "@/lib/validations/cta-form"
 import { submitContactForm } from "@/lib/form-handler"
-import { ZodError } from "zod"
 import { CheckCircle } from "lucide-react"
 
 export default function CtaSection() {
@@ -17,7 +15,6 @@ export default function CtaSection() {
   const [submitted, setSubmitted] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [validationErrors, setValidationErrors] = useState<Record<string, string>>({})
 
   const resetForm = () => {
     setName("")
@@ -26,36 +23,7 @@ export default function CtaSection() {
     setService("")
     setProduct("")
     setSubmitted(false)
-    setValidationErrors({})
     setError(null)
-  }
-
-  const validateForm = () => {
-    try {
-      ctaFormSchema.parse({
-        name,
-        email,
-        phone,
-        service,
-        product,
-      })
-      setValidationErrors({})
-      return true
-    } catch (error) {
-      if (error instanceof ZodError) {
-        const errorMap: Record<string, string> = {}
-        error.issues.forEach((issue) => {
-          if (issue.path && issue.path.length > 0) {
-            errorMap[issue.path[0]] = issue.message
-          }
-        })
-        setValidationErrors(errorMap)
-      } else {
-        console.error("Validation error:", error)
-        setError("Invalid form data. Please check your entries.")
-      }
-      return false
-    }
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -63,27 +31,28 @@ export default function CtaSection() {
     setIsSubmitting(true)
     setError(null)
 
-    if (!validateForm()) {
+    // Basic validation
+    if (!name || !email || !service || !product) {
+      setError("Please fill in all required fields")
       setIsSubmitting(false)
       return
     }
 
     try {
-      const ctaFormData = {
-        name,
-        email,
-        phone,
-        service,
-        product,
+      const formData = {
+        name: name || "",
+        email: email || "",
+        phone: phone || "",
+        service: service || "",
+        product: product || "",
       }
 
-      // Send directly without adaptation to avoid potential null issues
-      const result = await submitContactForm(ctaFormData)
+      const result = await submitContactForm(formData)
 
-      if (result.success) {
+      if (result && result.success) {
         setSubmitted(true)
       } else {
-        setError(result.message)
+        setError(result?.message || "An error occurred. Please try again.")
       }
     } catch (error) {
       console.error("Form submission error:", error)
@@ -246,38 +215,32 @@ export default function CtaSection() {
                 <form onSubmit={handleSubmit}>
                   <div className="mb-4">
                     <label htmlFor="name" className="block text-gray-700 font-medium mb-2">
-                      Name
+                      Name*
                     </label>
                     <input
                       type="text"
                       id="name"
-                      className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                        validationErrors.name ? "border-red-500" : "border-gray-300"
-                      }`}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       placeholder="Your name"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                       required
                     />
-                    {validationErrors.name && <p className="text-red-500 text-xs mt-1">{validationErrors.name}</p>}
                   </div>
 
                   <div className="mb-4">
                     <label htmlFor="email" className="block text-gray-700 font-medium mb-2">
-                      Email
+                      Email*
                     </label>
                     <input
                       type="email"
                       id="email"
-                      className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                        validationErrors.email ? "border-red-500" : "border-gray-300"
-                      }`}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       placeholder="Your email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       required
                     />
-                    {validationErrors.email && <p className="text-red-500 text-xs mt-1">{validationErrors.email}</p>}
                   </div>
 
                   <div className="mb-4">
@@ -287,25 +250,20 @@ export default function CtaSection() {
                     <input
                       type="tel"
                       id="phone"
-                      className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                        validationErrors.phone ? "border-red-500" : "border-gray-300"
-                      }`}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       placeholder="Your phone number"
                       value={phone}
                       onChange={(e) => setPhone(e.target.value)}
                     />
-                    {validationErrors.phone && <p className="text-red-500 text-xs mt-1">{validationErrors.phone}</p>}
                   </div>
 
                   <div className="mb-6">
                     <label htmlFor="service" className="block text-gray-700 font-medium mb-2">
-                      Service
+                      Service*
                     </label>
                     <select
                       id="service"
-                      className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                        validationErrors.service ? "border-red-500" : "border-gray-300"
-                      }`}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       value={service}
                       onChange={(e) => setService(e.target.value)}
                       required
@@ -316,19 +274,15 @@ export default function CtaSection() {
                       <option value="Support">Support</option>
                       <option value="Maintenance">Maintenance</option>
                     </select>
-                    {validationErrors.service && (
-                      <p className="text-red-500 text-xs mt-1">{validationErrors.service}</p>
-                    )}
                   </div>
+
                   <div className="mb-6">
                     <label htmlFor="product" className="block text-gray-700 font-medium mb-2">
-                      Product
+                      Product*
                     </label>
                     <select
                       id="product"
-                      className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                        validationErrors.product ? "border-red-500" : "border-gray-300"
-                      }`}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       value={product}
                       onChange={(e) => setProduct(e.target.value)}
                       required
@@ -338,16 +292,14 @@ export default function CtaSection() {
                       <option value="Bulk Email">Bulk Email</option>
                       <option value="USSD Codes">USSD Codes</option>
                       <option value="Short Codes">Short Codes</option>
-                      <option value="M-Pesa Intergration">M-Pesa Intergration</option>
+                      <option value="M-Pesa Integration">M-Pesa Integration</option>
                       <option value="Survey">Survey</option>
                       <option value="Service Desk">Service Desk</option>
                       <option value="Bulk WhatsApp">Bulk WhatsApp</option>
                       <option value="Airtime and Data Reward System">Airtime and Data Reward System</option>
                     </select>
-                    {validationErrors.product && (
-                      <p className="text-red-500 text-xs mt-1">{validationErrors.product}</p>
-                    )}
                   </div>
+
                   <button
                     type="submit"
                     className="w-full bg-gradient-to-r from-teal-500 to-blue-500 hover:from-teal-600 hover:to-blue-600 text-white font-medium py-3 px-4 rounded-lg shadow-md hover:shadow-lg transition-all transform hover:translate-y-[-2px]"

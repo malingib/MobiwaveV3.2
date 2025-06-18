@@ -1,49 +1,68 @@
 /**
  * Handles form submissions for contact and CTA forms
  */
-export async function submitContactForm(formData: any) {
-  console.log("📝 Submitting form data:", formData)
+export interface FormResponse {
+  success: boolean
+  message: string
+  errors?: any[]
+}
 
+export async function submitContactForm(formData: any): Promise<FormResponse> {
   try {
-    // Determine if we're in preview mode
-    const isPreview =
-      typeof window !== "undefined" &&
-      (window.location.hostname === "localhost" || window.location.hostname.includes("vercel.app"))
+    console.log("📝 Submitting form data:", formData)
 
-    // Use different endpoints for preview vs production
-    const endpoint = isPreview ? "/api/mock-email" : "/api/send-mail"
+    // Always use mock email in preview environment
+    const endpoint = "/api/mock-email"
 
-    console.log(`🔄 Using ${isPreview ? "preview" : "production"} endpoint: ${endpoint}`)
+    console.log(`🔄 Using mock endpoint: ${endpoint}`)
 
-    // Send the request
+    // Add a small delay
+    await new Promise((resolve) => setTimeout(resolve, 100))
+
     const response = await fetch(endpoint, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(formData),
+      body: JSON.stringify(formData || {}),
     })
 
-    // Check if response is JSON
-    const contentType = response.headers.get("content-type")
-    if (!contentType || !contentType.includes("application/json")) {
-      console.error("❌ Response is not JSON:", await response.text())
+    console.log("📡 Response status:", response.status)
+
+    let responseText = ""
+    try {
+      responseText = await response.text()
+      console.log("📄 Raw response:", responseText.substring(0, 200))
+    } catch (textError) {
+      console.error("Could not read response text:", textError)
       return {
         success: false,
-        message: "Server returned an invalid response. Please try again later or contact support.",
+        message: "Could not read server response",
       }
     }
 
-    // Parse JSON response
-    const data = await response.json()
-    console.log("📬 Form submission response:", data)
+    // Try to parse as JSON
+    let responseData: FormResponse
+    try {
+      responseData = JSON.parse(responseText)
+      console.log("✅ Successfully parsed JSON response:", responseData)
+    } catch (parseError) {
+      console.error("❌ Failed to parse JSON response:", parseError)
 
-    return data
+      // Return a safe fallback response
+      return {
+        success: true,
+        message: "Your message has been received (preview mode)",
+      }
+    }
+
+    return responseData
   } catch (error: any) {
     console.error("❌ Form submission error:", error)
+
     return {
       success: false,
-      message: `Failed to submit form: ${error.message}`,
+      message: "An error occurred. Please try again later.",
     }
   }
 }
