@@ -1,8 +1,16 @@
+import type { Metadata } from "next"
 import ServiceHero from "@/components/services/service-hero"
 import MPesaFeatures from "@/components/services/mpesa/mpesa-features"
 import MPesaIntegrations from "@/components/services/mpesa/mpesa-integrations"
 import MPesaUseCases from "@/components/services/mpesa/mpesa-use-cases"
 import ServiceCTA from "@/components/services/service-cta"
+
+export const metadata: Metadata = {
+  title: "M-Pesa Integration API Kenya | Daraja & Payments",
+  description:
+    "Integrate M-Pesa payments in Kenya with MobiWave. Build collections, disbursements and mobile money workflows with a reliable M-Pesa API.",
+  alternates: { canonical: "/services/mpesa-integration" },
+}
 
 export default function MPesaIntegrationPage() {
   return (
