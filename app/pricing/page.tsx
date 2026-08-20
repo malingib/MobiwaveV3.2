@@ -1,3 +1,4 @@
+import type { Metadata } from "next"
 import PricingHero from "@/components/pricing/pricing-hero"
 import BulkSMSPricing from "@/components/pricing/bulk-sms-pricing"
 import BulkEmailPricing from "@/components/pricing/bulk-email-pricing"
@@ -8,6 +9,13 @@ import MpesaIntegrationPricing from "@/components/pricing/mpesa-integration-pric
 import SurveyPricing from "@/components/pricing/survey-pricing"
 import PricingFAQ from "@/components/pricing/pricing-faq"
 import PricingCTA from "@/components/pricing/pricing-cta"
+
+export const metadata: Metadata = {
+  title: "Pricing Kenya | Bulk SMS, USSD, Email & M-Pesa",
+  description:
+    "View MobiWave pricing for Bulk SMS, USSD, Shortcodes, Bulk Email, M-Pesa integration, surveys and service desk solutions in Kenya.",
+  alternates: { canonical: "/pricing" },
+}
 
 export default function PricingPage() {
   return (
