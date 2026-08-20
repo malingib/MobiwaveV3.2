@@ -1,8 +1,16 @@
+import type { Metadata } from "next"
 import ServiceHero from "@/components/services/service-hero"
 import USSDFeatures from "@/components/services/ussd/ussd-features"
 import USSDUseCases from "@/components/services/ussd/ussd-use-cases"
 import USSDProcess from "@/components/services/ussd/ussd-process"
 import ServiceCTA from "@/components/services/service-cta"
+
+export const metadata: Metadata = {
+  title: "USSD Provider Kenya | USSD Integration & Codes",
+  description:
+    "Build USSD services in Kenya with MobiWave. Get USSD codes, integration support and reliable interactive mobile services for your customers.",
+  alternates: { canonical: "/services/ussd-codes" },
+}
 
 export default function USSDCodesPage() {
   return (
