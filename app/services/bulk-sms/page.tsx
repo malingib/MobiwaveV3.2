@@ -1,8 +1,16 @@
+import type { Metadata } from "next"
 import ServiceHero from "@/components/services/service-hero"
 import BulkSMSBenefits from "@/components/services/bulk-sms/bulk-sms-benefits"
 import BulkSMSFeatures from "@/components/services/bulk-sms/bulk-sms-features"
 import BulkSMSUseCases from "@/components/services/bulk-sms/bulk-sms-use-cases"
 import ServiceCTA from "@/components/services/service-cta"
+
+export const metadata: Metadata = {
+  title: "Bulk SMS Kenya | SMS API & Messaging Services",
+  description:
+    "Send reliable bulk SMS in Kenya with MobiWave. Connect your business to customers through our bulk SMS platform and messaging API.",
+  alternates: { canonical: "/services/bulk-sms" },
+}
 
 export default function BulkSMSPage() {
   return (
