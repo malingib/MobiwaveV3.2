@@ -1,5 +1,5 @@
 import type React from "react"
-import type { Metadata } from "next/types"
+import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 import "./globals.css"
 import Header from "@/components/header"
@@ -10,21 +10,52 @@ const inter = Inter({
   variable: "--font-inter",
 })
 
+const siteUrl = "https://mobiwave.co.ke"
+
 export const metadata: Metadata = {
-  title: "MobiWave Innovations - Empowering Communications",
+  metadataBase: new URL(siteUrl),
+  title: {
+    default: "MobiWave Innovations | Telecom & Communication APIs in Kenya",
+    template: "%s | MobiWave Innovations",
+  },
   description:
-    "Kenya's premier telecommunications solutions provider offering bulk SMS, bulk email, USSD codes, shortcodes, and M-Pesa integration APIs.",
-  generator: 'v0.dev',
+    "Kenya's telecommunications and communications technology provider for Bulk SMS, Bulk Email, USSD, WhatsApp messaging, Shortcodes, and M-Pesa integrations.",
+  alternates: {
+    canonical: "/",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
+  },
+  openGraph: {
+    type: "website",
+    locale: "en_KE",
+    url: siteUrl,
+    siteName: "MobiWave Innovations",
+    title: "MobiWave Innovations | Telecom & Communication APIs in Kenya",
+    description:
+      "Bulk SMS, Bulk Email, USSD, WhatsApp messaging, Shortcodes, and M-Pesa integrations for businesses and developers in Kenya.",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "MobiWave Innovations | Telecom & Communication APIs in Kenya",
+    description:
+      "Communication APIs and messaging services for Kenyan businesses and developers.",
+  },
   icons: {
     icon: [
-      { url: '/favicon.ico', sizes: '32x32', type: 'image/x-icon' },
-      { url: '/favicon.svg', type: 'image/svg+xml' }
-    ]
+      { url: "/favicon.ico", sizes: "32x32", type: "image/x-icon" },
+      { url: "/favicon.svg", type: "image/svg+xml" },
+    ],
   },
-  metadataBase: new URL('http://localhost:3000'),
-  other: {
-    'content-security-policy': "script-src 'self' 'unsafe-inline' 'unsafe-eval'; object-src 'none';"
-  }
+  generator: "Next.js",
 }
 
 export default function RootLayout({
@@ -35,7 +66,10 @@ export default function RootLayout({
   return (
     <html lang="en" className={inter.variable}>
       <head>
-        <meta httpEquiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline' 'unsafe-eval'; object-src 'none';" />
+        <meta
+          httpEquiv="Content-Security-Policy"
+          content="script-src 'self' 'unsafe-inline' 'unsafe-eval'; object-src 'none';"
+        />
       </head>
       <body className={inter.className}>
         <Header />
