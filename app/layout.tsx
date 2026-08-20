@@ -20,9 +20,6 @@ export const metadata: Metadata = {
   },
   description:
     "Kenya's telecommunications and communications technology provider for Bulk SMS, Bulk Email, USSD, WhatsApp messaging, Shortcodes, and M-Pesa integrations.",
-  alternates: {
-    canonical: "/",
-  },
   robots: {
     index: true,
     follow: true,
